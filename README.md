@@ -1,7 +1,11 @@
 # terraform-ansible-ec2-lab
 
-## Repository Structure
+---
 
+
+## 📁 Repository Structure
+
+```
 terraform-ansible-ec2-lab/
 ├── terraform/
 │   ├── main.tf            # EC2 resources & inventory generation
@@ -17,6 +21,107 @@ terraform-ansible-ec2-lab/
 │
 ├── .gitignore             # Ignored files
 └── README.md              # Project documentation
+```
+
+---
+
+## 🛠️ How to Fix Common Issues
+
+### **1. Terraform Not Initializing**
+
+If you see:
+
+```
+Terraform initialized in an empty directory!
+```
+
+➡️ Make sure your `.tf` files exist inside the **terraform/** folder.
+Run:
+
+```sh
+cd terraform
+terraform init
+```
+
+---
+
+### **2. Terraform Inventory Not Generated**
+
+If `inventory.ini` is missing:
+
+1. Verify the output block in `outputs.tf`
+2. Re-run:
+
+```sh
+terraform apply
+```
+
+3. Confirm this line exists in `main.tf`:
+
+```hcl
+templatefile("${path.module}/inventory.tpl", {...})
+```
+
+---
+
+### **3. Ansible Unable to Connect to EC2**
+
+If SSH fails:
+
+✔ Ensure the instance has a **public IP**
+✔ Ensure security group allows:
+
+```
+Inbound: port 22 (SSH)
+```
+
+✔ Use the correct private key:
+
+```sh
+ansible-playbook -i inventory.ini playbook.yml --private-key ~/.ssh/yourkey.pem
+```
+
+---
+
+### **4. Ansible “Python Not Found” Error**
+
+Install Python on EC2:
+
+```sh
+sudo yum install python3 -y
+```
+
+---
+
+### **5. AWS Provider Authentication Issue**
+
+If you see:
+
+```
+Unable to locate credentials
+```
+
+Fix by configuring AWS CLI:
+
+```sh
+aws configure
+```
+
+---
+
+### **6. State Lock Issues (S3 Backend)**
+
+If using remote state and it gets stuck:
+
+Unlock manually:
+
+```sh
+terraform force-unlock <LOCK_ID>
+```
+
+---
+
+If you want, I can generate a **full clean README.md** combining everything (overview, usage, diagrams, setup steps, troubleshooting).
 
 
 # Terraform + Ansible EC2 Automation
